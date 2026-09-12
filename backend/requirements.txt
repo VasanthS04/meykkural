@@ -1,0 +1,71 @@
+# ==============================
+# Web API
+# ==============================
+
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+
+# ==============================
+# Numerical / Scientific
+# ==============================
+
+numpy==2.2.1
+scipy==1.15.0
+
+
+# ==============================
+# Audio Processing
+# ==============================
+
+librosa==0.10.2.post1
+soundfile==0.13.0
+
+
+# ==============================
+# Machine Learning
+# ==============================
+
+torch
+torchaudio
+torchvision
+
+
+# ==============================
+# Hugging Face / Transformer Models
+# ==============================
+
+transformers
+huggingface-hub
+safetensors
+
+
+# ==============================
+# Speaker Recognition
+# ==============================
+
+speechbrain
+
+
+# ==============================
+# Computer Vision / Signal Utilities
+# ==============================
+
+scikit-learn
+scikit-image
+
+
+# ==============================
+# Graph / Geometry
+# ==============================
+
+networkx
+
+
+# ==============================
+# Configuration / Utilities
+# ==============================
+
+python-dotenv
+PyYAML
