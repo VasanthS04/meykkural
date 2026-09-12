@@ -17,3 +17,4 @@ datasets/validation/*
 !datasets/testing/README.md
 !datasets/training/README.md
 !datasets/validation/README.md
+backend/model_weights/
