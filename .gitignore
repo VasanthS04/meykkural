@@ -18,3 +18,7 @@ datasets/validation/*
 !datasets/training/README.md
 !datasets/validation/README.md
 backend/model_weights/
+
+# Downloaded dataset audio is local-only.
+datasets/benchmark/*/*
+datasets/samples/*

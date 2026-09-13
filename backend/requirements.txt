@@ -38,6 +38,7 @@ torchvision
 
 transformers
 huggingface-hub
+datasets
 safetensors
 
 
@@ -69,3 +70,4 @@ networkx
 
 python-dotenv
 PyYAML
+pytest

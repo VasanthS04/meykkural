@@ -52,3 +52,47 @@ py scripts\prepare_dataset.py datasets\testing\generated datasets\testing\manife
 
 These fixtures validate transport and preprocessing only; they are not a
 replacement for a licensed real-world training or validation corpus.
+
+## Download data and models
+
+The lightweight local audio fixtures come from the public Hugging Face dataset
+[DynamicSuperb/SpoofDetection_ASVspoof2015](https://huggingface.co/datasets/DynamicSuperb/SpoofDetection_ASVspoof2015).
+Install the backend requirements, then download a balanced sample into all
+three local dataset targets:
+
+```cmd
+py scripts\download_datasets.py --max-per-label 4
+```
+
+The script writes `bonafide` and `spoof` WAV files to
+`datasets\benchmark\asvspoofing`, `datasets\benchmark\deepvoice`, and
+`datasets\samples`. Increase `--max-per-label` for a larger local sample or
+pass `--target datasets\my-dataset` to use another output directory. Downloaded
+audio is ignored by git.
+
+For larger or task-specific corpora, use the dataset catalog at
+[Hugging Face Datasets](https://huggingface.co/datasets). Review each dataset's
+license and access requirements before downloading or redistributing audio.
+
+The model downloader references these Hugging Face repositories:
+
+- [clovaai/aasist](https://huggingface.co/clovaai/aasist)
+- [facebook/wav2vec2-base](https://huggingface.co/facebook/wav2vec2-base)
+- [ALLA1N/rawnet2-itw-robustness-specialist](https://huggingface.co/ALLA1N/rawnet2-itw-robustness-specialist)
+- [openmmlab/mmclassification](https://huggingface.co/openmmlab/mmclassification)
+- [yangwang825/ecapa-tdnn-vox2](https://huggingface.co/yangwang825/ecapa-tdnn-vox2)
+
+The checked-in model artifacts under `backend\model_weights` are sufficient
+for the current local application. Checkpoint downloads may be large and can
+have separate licenses.
+
+## Technology stack
+
+- **Frontend:** React 18, Vite, and `lucide-react`
+- **Backend:** Python 3.13, FastAPI, Uvicorn, and WebSockets
+- **Audio:** librosa, SciPy, SoundFile, torchaudio, and in-memory buffering
+- **Machine learning:** PyTorch, Transformers, Hugging Face Datasets,
+  safetensors, SpeechBrain, and scikit-learn
+- **Models:** AASIST, Wav2Vec2, RawNet2, Conformer, XLS-R, and ECAPA-TDNN
+- **Operations:** Docker Compose, environment variables via `python-dotenv`,
+  and PyYAML configuration
