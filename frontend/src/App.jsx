@@ -1701,6 +1701,26 @@ function AlertPanel({
 
       <div className="alert-right">
 
+        {expanded && (
+
+          <div className="overall-score">
+
+            <strong>
+              {Math.round(state.risk)}
+            </strong>
+
+            <span>
+              /100
+            </span>
+
+            <small>
+              OVERALL SECURITY SCORE
+            </small>
+
+          </div>
+
+        )}
+
         <b>
           {label}
         </b>

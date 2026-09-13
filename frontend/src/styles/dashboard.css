@@ -1171,6 +1171,59 @@ h3 {
 }
 
 
+.overall-score {
+
+  margin-bottom: 8px;
+
+}
+
+
+.overall-score strong,
+.overall-score span,
+.overall-score small {
+
+  display: inline-block;
+
+}
+
+
+.overall-score strong {
+
+  color: var(--text);
+
+  font-size: 30px;
+
+  line-height: 1;
+
+}
+
+
+.overall-score span {
+
+  margin-left: 2px;
+
+  color: var(--muted);
+
+  font-size: 11px;
+
+}
+
+
+.overall-score small {
+
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--muted);
+
+  font-size: 8px;
+
+  letter-spacing: 1px;
+
+}
+
+
 .alert-right b,
 .alert-right small {
 
