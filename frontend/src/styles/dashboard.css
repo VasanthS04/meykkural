@@ -1231,6 +1231,110 @@ h3 {
 }
 
 
+.session-summary {
+
+  display: flex;
+
+  gap: 22px;
+
+  margin-top: 12px;
+
+}
+
+
+.session-summary small,
+.session-summary b,
+.model-comparison > small {
+
+  display: block;
+
+}
+
+
+.session-summary small,
+.model-comparison > small {
+
+  color: var(--muted);
+
+  font-size: 8px;
+
+  letter-spacing: 1px;
+
+}
+
+
+.session-summary b {
+
+  margin-top: 4px;
+
+  font-size: 14px;
+
+}
+
+
+.model-comparison {
+
+  max-width: 430px;
+
+  margin-top: 16px;
+
+}
+
+
+.model-comparison-row {
+
+  display: grid;
+
+  grid-template-columns: 88px 1fr 28px;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 7px;
+
+  color: var(--muted);
+
+  font-size: 9px;
+
+}
+
+
+.model-comparison-row i {
+
+  height: 5px;
+
+  overflow: hidden;
+
+  background: #14272d;
+
+  border-radius: 3px;
+
+}
+
+
+.model-comparison-row em {
+
+  display: block;
+
+  height: 100%;
+
+  background: var(--cyan);
+
+  border-radius: inherit;
+
+}
+
+
+.model-comparison-row b {
+
+  color: var(--text);
+
+  text-align: right;
+
+}
+
+
 .alert-right b,
 .alert-right small {
 

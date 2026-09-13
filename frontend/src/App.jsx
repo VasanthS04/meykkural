@@ -120,6 +120,64 @@ function SpeakerIntegrity({ value }) {
 }
 
 
+const MODEL_LABELS = {
+  aasist: "AASIST",
+  wav2vec2: "Wav2Vec2",
+  rawnet2: "RawNet2",
+  conformer: "Conformer",
+  xlsr: "XLS-R",
+  ecapa: "ECAPA-TDNN"
+};
+
+
+function summarizeSession(analyses, fallbackRisk) {
+
+  const risks = analyses
+    .map(analysis => Number(analysis.risk))
+    .filter(Number.isFinite);
+
+  if (!risks.length) {
+    return {
+      average: Number(fallbackRisk) || 0,
+      current: Number(fallbackRisk) || 0,
+      peak: Number(fallbackRisk) || 0,
+      windows: 0,
+      models: []
+    };
+  }
+
+  const modelTotals = {};
+  const modelCounts = {};
+
+  analyses.forEach(analysis => {
+    Object.entries(analysis.models || {}).forEach(([key, value]) => {
+      const score = Number(value);
+      if (!MODEL_LABELS[key] || !Number.isFinite(score)) {
+        return;
+      }
+      modelTotals[key] = (modelTotals[key] || 0) + score;
+      modelCounts[key] = (modelCounts[key] || 0) + 1;
+    });
+  });
+
+  const models = Object.keys(modelTotals)
+    .map(key => ({
+      key,
+      label: MODEL_LABELS[key],
+      score: modelTotals[key] / modelCounts[key]
+    }))
+    .sort((left, right) => right.score - left.score);
+
+  return {
+    average: risks.reduce((total, value) => total + value, 0) / risks.length,
+    current: risks[risks.length - 1],
+    peak: Math.max(...risks),
+    windows: risks.length,
+    models
+  };
+}
+
+
 export default function App() {
 
   const [page, setPage] =
@@ -132,6 +190,9 @@ export default function App() {
     useState(initialState);
 
   const [history, setHistory] =
+    useState([]);
+
+  const [sessionAnalyses, setSessionAnalyses] =
     useState([]);
 
   const [riskPopup, setRiskPopup] =
@@ -187,6 +248,13 @@ export default function App() {
         ...previous.slice(-39),
         Number(data.risk)
       ]);
+      setSessionAnalyses(previous => [
+        ...previous,
+        {
+          risk,
+          models: data.models || {}
+        }
+      ]);
     }
 
     if (notification?.notify_user) {
@@ -228,6 +296,7 @@ export default function App() {
 
   const resetAnalysisState = () => {
     setHistory([]);
+    setSessionAnalyses([]);
     lastAlertRef.current = {
       level: "LOW"
     };
@@ -1081,6 +1150,7 @@ export default function App() {
 
             <AlertPanel
               state={state}
+              analyses={sessionAnalyses}
             />
 
           </>
@@ -1112,6 +1182,7 @@ export default function App() {
 
           <AlertPanel
             state={state}
+            analyses={sessionAnalyses}
             expanded
           />
 
@@ -1660,14 +1731,24 @@ function RiskTimeline({
 
 function AlertPanel({
   state,
+  analyses = [],
   expanded = false
 }) {
+
+  const summary = summarizeSession(
+    analyses,
+    state.risk
+  );
+
+  const overallRisk = expanded
+    ? summary.average
+    : state.risk;
 
   const [
     label
   ] =
     getRiskLevel(
-      state.risk
+      overallRisk
     );
 
 
@@ -1700,11 +1781,11 @@ function AlertPanel({
         <h3>
 
           {
-            state.risk >= 70
+            overallRisk >= 70
 
               ? "Potential voice-cloning attack detected"
 
-              : state.risk >= 30
+              : overallRisk >= 30
 
                 ? "Suspicious voice characteristics"
 
@@ -1715,8 +1796,50 @@ function AlertPanel({
 
 
         <p>
-          {state.alert}
+          {expanded && summary.windows
+            ? `${summary.windows} listening windows analyzed. Overall score is the session average.`
+            : state.alert}
         </p>
+
+        {expanded && summary.windows > 0 && (
+
+          <div className="session-summary">
+
+            <div>
+              <small>CURRENT</small>
+              <b>{Math.round(summary.current)}/100</b>
+            </div>
+
+            <div>
+              <small>PEAK</small>
+              <b>{Math.round(summary.peak)}/100</b>
+            </div>
+
+          </div>
+
+        )}
+
+        {expanded && summary.models.length > 0 && (
+
+          <div className="model-comparison">
+
+            <small>SESSION MODEL COMPARISON</small>
+
+            {summary.models.map(model => (
+
+              <div className="model-comparison-row" key={model.key}>
+                <span>{model.label}</span>
+                <i>
+                  <em style={{ width: `${model.score}%` }} />
+                </i>
+                <b>{Math.round(model.score)}</b>
+              </div>
+
+            ))}
+
+          </div>
+
+        )}
 
       </div>
 
@@ -1728,7 +1851,7 @@ function AlertPanel({
           <div className="overall-score">
 
             <strong>
-              {Math.round(state.risk)}
+              {Math.round(overallRisk)}
             </strong>
 
             <span>
