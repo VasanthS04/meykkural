@@ -13,7 +13,7 @@ export function useRisk(
       return "HIGH";
     }
 
-    if (risk >= 35) {
+    if (risk >= 30) {
       return "MEDIUM";
     }
 

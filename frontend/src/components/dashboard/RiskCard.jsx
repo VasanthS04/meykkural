@@ -5,7 +5,7 @@ export default function RiskCard({
   const level =
     risk >= 70
       ? "HIGH"
-      : risk >= 35
+      : risk >= 30
         ? "MEDIUM"
         : "LOW";
 

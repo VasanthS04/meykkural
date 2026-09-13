@@ -77,7 +77,7 @@ function getRiskLevel(risk) {
     return ["HIGH", "danger"];
   }
 
-  if (risk >= 35) {
+  if (risk >= 30) {
     return ["MEDIUM", "warning"];
   }
 
@@ -92,7 +92,7 @@ function Score({ value }) {
   const className =
     number >= 70
       ? "danger"
-      : number >= 35
+      : number >= 30
         ? "warning"
         : "safe";
 
@@ -100,6 +100,22 @@ function Score({ value }) {
     <span className={`score ${className}`}>
       {number}%
     </span>
+  );
+}
+
+
+function SpeakerIntegrity({ value }) {
+
+  if (!value) {
+    return (
+      <span className="score unavailable">
+        N/A
+      </span>
+    );
+  }
+
+  return (
+    <Score value={value} />
   );
 }
 
@@ -137,7 +153,9 @@ export default function App() {
     useRef(null);
 
   const lastAlertRef =
-    useRef("");
+    useRef({
+      level: "LOW"
+    });
 
   const popupTimerRef =
     useRef(null);
@@ -171,11 +189,15 @@ export default function App() {
       ]);
     }
 
-    if (risk >= 30 && notification?.notify_user) {
-      const alertKey = `${notification.level}:${Math.round(risk)}`;
+    if (notification?.notify_user) {
+      const previousAlert = lastAlertRef.current;
+      const severityChanged =
+        notification.level !== previousAlert.level;
 
-      if (lastAlertRef.current !== alertKey) {
-        lastAlertRef.current = alertKey;
+      if (severityChanged) {
+        lastAlertRef.current = {
+          level: notification.level
+        };
         setRiskPopup({
           level: notification.level,
           title: notification.title,
@@ -195,11 +217,20 @@ export default function App() {
         }
       }
     }
+
+    if (notification?.level === "LOW") {
+      lastAlertRef.current = {
+        level: "LOW"
+      };
+    }
   };
 
 
   const resetAnalysisState = () => {
     setHistory([]);
+    lastAlertRef.current = {
+      level: "LOW"
+    };
     setState({
       ...initialState,
       alert: "Analysis refreshed. Ready for a new listening session."
@@ -956,22 +987,16 @@ export default function App() {
                 <div className="speaker-value">
 
                   <strong>
-                    {
-                      Math.round(
-                        state.speaker
-                      )
-                    }%
+                    {state.speaker > 0
+                      ? `${Math.round(state.speaker)}%`
+                      : "N/A"}
                   </strong>
 
-                  <Score
-                    value={
-                      100 -
-                      state.speaker
-                    }
+                  <SpeakerIntegrity
+                    value={state.speaker}
                   />
 
                 </div>
-
 
                 <div className="progress">
 
@@ -981,7 +1006,6 @@ export default function App() {
                         `${state.speaker}%`
                     }}
                   />
-
                 </div>
 
 
@@ -994,11 +1018,9 @@ export default function App() {
                     </small>
 
                     <b>
-                      {
-                        Math.round(
-                          state.speaker
-                        )
-                      }%
+                      {state.speaker > 0
+                        ? `${Math.round(state.speaker)}%`
+                        : "UNAVAILABLE"}
                     </b>
 
                   </div>
@@ -1601,7 +1623,7 @@ function RiskTimeline({
             const className =
               value >= 70
                 ? "danger"
-                : value >= 35
+                : value >= 30
                   ? "warning"
                   : "";
 
@@ -1682,7 +1704,7 @@ function AlertPanel({
 
               ? "Potential voice-cloning attack detected"
 
-              : state.risk >= 35
+              : state.risk >= 30
 
                 ? "Suspicious voice characteristics"
 

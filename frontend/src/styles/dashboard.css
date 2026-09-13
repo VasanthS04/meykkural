@@ -771,6 +771,13 @@ h3 {
 }
 
 
+.score.unavailable {
+
+  color: var(--muted);
+
+}
+
+
 .progress {
 
   height: 4px;

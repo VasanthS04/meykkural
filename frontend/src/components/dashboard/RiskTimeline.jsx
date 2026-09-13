@@ -33,7 +33,7 @@ export default function RiskTimeline({
             const className =
               value >= 70
                 ? "danger"
-                : value >= 35
+                : value >= 30
                   ? "warning"
                   : "";
 

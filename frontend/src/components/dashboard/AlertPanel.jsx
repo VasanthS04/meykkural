@@ -6,7 +6,7 @@ export default function AlertPanel({
   const level =
     risk >= 70
       ? "HIGH"
-      : risk >= 35
+      : risk >= 30
         ? "MEDIUM"
         : "LOW";
 

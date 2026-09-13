@@ -6,7 +6,7 @@ export function getRiskLevel(
     return "HIGH";
   }
 
-  if (risk >= 35) {
+  if (risk >= 30) {
     return "MEDIUM";
   }
 
@@ -23,7 +23,7 @@ export function getRiskClass(
     return "danger";
   }
 
-  if (risk >= 35) {
+  if (risk >= 30) {
     return "warning";
   }
 
